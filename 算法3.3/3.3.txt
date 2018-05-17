@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAXVEX 100
+#define MAX_FLOAT_NUM 3.14e38
+
+typedef struct enode{
+    int adjvex;
+    int info;
+    struct enode *nextadj;
+}EdgeNode;
+
+typedef struct vnode{
+    int vervex;
+    EdgeNode *firstedge;
+}VerNode,AdjList[MAXVEX];
+
+typedef struct{
+    AdjList adjlist;
+    int v_num;
+    int e_num;
+}ALGraph;
+
+void dijkstra(NODE node[],int n,int u,float d[],int p[])
+{
+    float temp;
+    int i, j, t;
+    bool *s;
+    if(!(s=(bool *)malloc((size_t)n * sizeof(bool))))
+        exit(EXIT_FAILURE);
+    NODE *pnode;
+    for (i = 0; i < n;i++)
+    {
+        d[i] = MAX_FLOAT_NUM;
+        s[i] = FALSE;
+        p[i] = -1;
+    }
+    if(!(pnode=node[u].next))
+        return;
+    while(pnode)
+    {
+        d[pnode->v_num] = pnode->len;
+        p[pnode->v_num] = u;
+        pnode = pnode->next;
+    }
+    d[u] = 0;                          //将u设为源节点
+    s[u] = TRUE;                       //将u加入中间节点集，即把中间节点集初始化为{u}
+    for (i = 1; i < n;i++)             //第一层for循环，每次循环将一个不在中间结点集的
+    {
+        temp = MAX_FLOAT_NUM;
+        t = u;
+        for (j = 0; j < n;j++)
+        {
+            if(!s[j]&&d[j]<temp)
+            {
+                t = j;
+                temp = d[t];
+            }    
+        }
+        if(t==u)
+            break;
+        s[t] = TRUE;
+        pnode = node[t].next;
+        while(pnode)
+        {
+            if(!s[pnode->v_num]&&d[pnode->v_num]>d[t]+pnode->len)
+            {
+                d[pnode->v_num] = d[t] + pnode->len;
+                p[pnode->v_num] = t;
+            }
+            pnode = pnode->next;
+        }
+    }
+    free(s);
+}
+
+void CreateALGraph(ALGraph *G)
+{
+    int i, j;
+    EdgeNode *s;
+    printf("请输入顶点数和边数:\n");
+    scanf("%d%d", &(G->v_num), &(G->e_num));
+    printf("请输入顶点信息:\n");
+    for (i = 0; i < G->v_num;i++)
+    {
+        scanf("%d", &(G->adjlist[i].vervex));
+        G->adjlist[i].firstedge = NULL;
+    }
+    printf("请输入边的信息:\n");
+    for (i = 0; i < G->e_num;i++)
+    {
+        scanf("%d%d", &i, &j);
+        s = (EdgeNode *)malloc(sizeof(EdgeNode));
+        s->adjvex = j;
+        s->nextadj = adjlist[i].firstedge;
+        adjlist[i].firstedge = s;
+    }
+}
+
+int main(void)
+{
+    NODE node[N];
+    NODE *index;
+    printf("请输入有向图的邻接表:\n");
+    for (index = node; index < node + N;index++)
+        scanf("请")
+}
